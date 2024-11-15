@@ -11,7 +11,7 @@ canvas {
     position: absolute;
     color: white;
     font-size: 20px;
-    font-family: 'Bebas Neue', cursive;
+    font-family: "Bebas Neue", sans-serif;
     font-weight: bold;
     pointer-events: none;
     white-space: nowrap;
@@ -115,7 +115,7 @@ input[type="range"]::-webkit-slider-thumb:hover{
     top: 60px;
     right: 20px; /* Position on the right side */
     position: absolute;
-    font-family: 'Bebas Neue', cursive;
+    font-family: "Bebas Neue", sans-serif;
     color: white;
     font-size: 16px;
     transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition */
@@ -152,7 +152,7 @@ input[type="range"]::-webkit-slider-thumb:hover{
     transform: translateX(-50%); 
     color: white; 
     font-size: 20px; 
-    font-family: 'Bebas Neue', cursive; 
+    font-family: "Bebas Neue", sans-serif;
     background-color: rgba(0, 0, 0, 0.7); 
     padding: 10px; 
     border-radius: 4px;
