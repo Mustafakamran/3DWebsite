@@ -1,0 +1,211 @@
+body { 
+    margin: 0; 
+    overflow: hidden; 
+}
+
+canvas { 
+    display: block; 
+}
+
+#object-name {
+    position: absolute;
+    color: white;
+    font-size: 20px;
+    font-family: 'Bebas Neue', cursive;
+    font-weight: bold;
+    pointer-events: none;
+    white-space: nowrap;
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    border-radius: 4px;
+}
+
+#deselect-button {
+    pointer-events: auto; 
+    background: transparent;
+    color: white;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#deselect-button:hover {
+    transition: 0.3s ease-in-out;
+    color: #ffb800; 
+}
+
+.styled-button {
+    position: absolute;
+    top: 20px; 
+    left: 20px;
+    z-index: 10;
+    pointer-events: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 5px 10px;
+    color: white;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: none;
+    border-radius: 4px;
+}
+
+.styled-button:hover {
+    transition: 0.3s ease-in-out;
+    color: #ffb800; /* Hover color */
+}
+
+.options-button {
+    position: absolute;
+    top: 20px; 
+    left: 20px;
+    z-index: 10;
+    pointer-events: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 5px 10px;
+    color: white;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.options-button:hover {
+    transition: 0.3s ease-in-out;
+    color: #ffb800; /* Hover color */
+}
+
+input[type="range"] {
+    appearance: none;
+    width: 100%;
+    height: 25px;
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    outline: none;
+    opacity: 0.95;
+    transition: .5s ease;
+    border-radius: 6px;
+}
+
+input[type="range"]:hover {
+    transition: 0.3s ease-in-out;
+    opacity: 1;
+  }
+  
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #ffcc00;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 4px;
+  }
+  
+input[type="range"]::-webkit-slider-thumb:hover{
+    background:#ffd979;
+    transition: 0.3s ease-in-out;
+}
+
+#controls {
+    top: 60px;
+    right: 20px; /* Position on the right side */
+    position: absolute;
+    font-family: 'Bebas Neue', cursive;
+    color: white;
+    font-size: 16px;
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition */
+    transform: translateX(0);
+}
+
+.styled-button1 {
+    position: absolute;
+    top: 20px; 
+    right: 0px; /* Align button to the right */
+    z-index: 10;
+    pointer-events: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 5px 10px;
+    color: white;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.3s ease;
+}
+
+.styled-button1:hover {
+    transition: 0.3s ease-in-out;
+    color: #ffb800; /* Hover color */
+}
+
+.idleTimer {
+    display: none; 
+    position: absolute; 
+    bottom: 20px; 
+    left: 80px; 
+    transform: translateX(-50%); 
+    color: white; 
+    font-size: 20px; 
+    font-family: 'Bebas Neue', cursive; 
+    background-color: rgba(0, 0, 0, 0.7); 
+    padding: 10px; 
+    border-radius: 4px;
+}
+
+.styled-button2 {
+    position: absolute;
+    top: 110px;
+    right: 0px;
+    appearance: none;
+    pointer-events: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 5px 10px;
+    color: white;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s ease;
+}
+
+.styled-button2:hover {
+    transition: 0.3s ease-in-out;
+    color: #ffb800; /* Hover color */
+}
+
+Positioning the color menu below the object name
+#color-menu {
+    display: flex;
+    gap: 5px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 100%; /* Position below object name */
+    left: 0;
+    z-index: 9;
+}
+
+#color-menu button {
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+#custom-color {
+    width: 30px;
+    height: 30px;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 3px;
+}

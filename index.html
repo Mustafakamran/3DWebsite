@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>3D Model Website</title>
+    <!-- Import Three.js and GLTFLoader directly from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/OutlinePass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/BokehPass.js"></script>
+
+</head>
+<body> 
+    <div id="object-name">
+        <span id="object-text"></span>
+        <button id="deselect-button">X</button>
+    </div>
+  
+    <div id="idle-timer-display" class="idleTimer">
+        Going Idle in <span id="idle-countdown">5</span>
+    </div>
+   
+    <!-- Toggle Options Visibility Button -->
+    <button id="toggle-options-button" class="options-button" style="top: 20px;">☰</button>
+
+    <button id="toggle-selection-button" class="styled-button" style="top: 60px;">Enable Selection</button>
+
+    <!-- FOV Adjustment -->
+    <button id="fov-button" class="styled-button" style="top: 100px;">Set FOV</button>
+
+    <input id="fov-input" class="styled-button" type="number" min="10" max="100" placeholder="SET" style="position: absolute; top: 100px; left: 120px; width: 60px;">
+        
+    <!-- Camera Lock Toggle -->
+    <button id="lock-camera-button" class="styled-button" style="top: 140px;">Lock Camera</button>
+ 
+    <!-- Reset Camera Button -->
+    <button id="reset-camera-button" class="styled-button" style="top: 180px;">Reset Camera</button>
+    
+    <!-- Settings CC -->
+    <button id="settings-button" class="styled-button1" style="top: 20px; right: 20px;">⚙</button>
+
+   <!-- Settings Container (Sliders) -->
+    <div id="controls" style="display: none;">
+        <label>Brightness <input type="range" id="brightness-slider" min="-1" max="1" step="0.125" value="0"></label>
+        <br>
+        <label>Contrast <input type="range" id="contrast-slider" min="0" max="2" step="0.125" value="1"></label>
+        <br>
+        <button id="toggle-origins-button" class="styled-button2">Show Origins</button>
+    </div>
+    
+    <!-- Link to the external script file -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
+
+
