@@ -479,7 +479,7 @@ toggleOriginsButton.addEventListener('click', () => {
 // Load the GLTF model
 const loader = new THREE.GLTFLoader();
 loader.load(
-    './assets/scene.glb',
+    'https://pub-0fa84320243249fca31ce0de4238c3e8.r2.dev/scene.glb',
     (gltf) => {
         const model = gltf.scene;
         model.position.set(-.35, -1, -3);
