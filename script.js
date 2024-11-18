@@ -341,9 +341,37 @@ deselectButton.addEventListener('click', () => {
     }
 });
 
+let model; // Global variable for the model
+let adjustedBoundingBox; // Global variable for the shrunken bounding box
 
 // Array to hold the origin dots for toggling visibility
 let originDots = [];
+
+// Configure the raycaster to ignore layer 1
+raycaster.layers.enable(0); // Enable default layer 0 for selection
+raycaster.layers.disable(1); // Disable layer 1 to ignore origin dots
+
+// Toggle the visibility of the origin dots and adjust camera layers
+const toggleOriginsButton = document.getElementById('toggle-origins-button');
+let originsVisible = false;
+
+toggleOriginsButton.addEventListener('click', () => {
+    originsVisible = !originsVisible;
+    
+    originDots.forEach((dot) => {
+        dot.visible = originsVisible; // Toggle visibility of each dot
+    });
+    
+    // Adjust camera layers to show or hide the origin layer
+    if (originsVisible) {
+        camera.layers.enable(1); // Enable layer 1 to show origins
+    } else {
+        camera.layers.disable(1); // Disable layer 1 to hide origins
+    }
+    
+    // Update button text
+    toggleOriginsButton.textContent = originsVisible ? "Hide Origins" : "Show Origins";
+});
 
 // Function to add origin dots to each object's origin
 function addOriginDots(model) {
@@ -385,34 +413,6 @@ function addOriginDots(model) {
         }
     });
 }
-// Configure the raycaster to ignore layer 1
-raycaster.layers.enable(0); // Enable default layer 0 for selection
-raycaster.layers.disable(1); // Disable layer 1 to ignore origin dots
-
-// Toggle the visibility of the origin dots and adjust camera layers
-const toggleOriginsButton = document.getElementById('toggle-origins-button');
-let originsVisible = false;
-
-toggleOriginsButton.addEventListener('click', () => {
-    originsVisible = !originsVisible;
-    
-    originDots.forEach((dot) => {
-        dot.visible = originsVisible; // Toggle visibility of each dot
-    });
-
-    // Adjust camera layers to show or hide the origin layer
-    if (originsVisible) {
-        camera.layers.enable(1); // Enable layer 1 to show origins
-    } else {
-        camera.layers.disable(1); // Disable layer 1 to hide origins
-    }
-
-    // Update button text
-    toggleOriginsButton.textContent = originsVisible ? "Hide Origins" : "Show Origins";
-});
-
-let model; // Global variable for the model
-let adjustedBoundingBox; // Global variable for the shrunken bounding box
 
 const loader = new THREE.GLTFLoader();
 const margin = 0.5; // Adjust this as needed
@@ -423,9 +423,9 @@ loader.load(
         model = gltf.scene; // Store the model globally
         model.position.set(-0.3, -1, -3); // Adjust the model's position as needed
         scene.add(model);
-
+        addOriginDots(model);
         console.log("Model loaded successfully");
-
+        
         // Calculate the bounding box and shrink it
         const originalBoundingBox = calculateBoundingBox(model);
         adjustedBoundingBox = shrinkBoundingBox(originalBoundingBox, margin);
@@ -436,6 +436,7 @@ loader.load(
         console.error('Error loading the model:', error);
     }
 );
+
 
 function calculateBoundingBox(object) {
     const box = new THREE.Box3().setFromObject(object);
