@@ -415,7 +415,7 @@ let model; // Global variable for the model
 let adjustedBoundingBox; // Global variable for the shrunken bounding box
 
 const loader = new THREE.GLTFLoader();
-const margin = 0.3; // Adjust this as needed
+const margin = 0.5; // Adjust this as needed
 
 loader.load(
     'assets/scene.glb',
