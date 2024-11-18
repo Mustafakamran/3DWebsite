@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>3D Model Website</title>
-    <!-- Import Three.js and GLTFLoader directly from CDN -->
+    <title>3D Website</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/controls/OrbitControls.js"></script>
@@ -27,31 +26,31 @@
         <span id="object-text"></span>
         <button id="deselect-button">X</button>
     </div>
-  
+    
     <div id="idle-timer-display" class="idleTimer">
         Going Idle in <span id="idle-countdown">5</span>
     </div>
-   
+    
     <!-- Toggle Options Visibility Button -->
     <button id="toggle-options-button" class="options-button" style="top: 20px;">☰</button>
-
+    
     <button id="toggle-selection-button" class="styled-button" style="top: 60px;">Enable Selection</button>
-
+    
     <!-- FOV Adjustment -->
     <button id="fov-button" class="styled-button" style="top: 100px;">Set FOV</button>
-
+    
     <input id="fov-input" class="styled-button" type="number" min="10" max="100" placeholder="SET" style="position: absolute; top: 100px; left: 120px; width: 60px;">
         
     <!-- Camera Lock Toggle -->
     <button id="lock-camera-button" class="styled-button" style="top: 140px;">Lock Camera</button>
- 
+   
     <!-- Reset Camera Button -->
     <button id="reset-camera-button" class="styled-button" style="top: 180px;">Reset Camera</button>
     
     <!-- Settings CC -->
     <button id="settings-button" class="styled-button1" style="top: 20px; right: 20px;">⚙</button>
-
-   <!-- Settings Container (Sliders) -->
+    
+    <!-- Settings Container (Sliders) -->
     <div id="controls" style="display: none;">
         <label>Brightness <input type="range" id="brightness-slider" min="-1" max="1" step="0.125" value="0"></label>
         <br>
@@ -61,8 +60,7 @@
     </div>
     
     <!-- Link to the external script file -->
-    <script src="script.js"></script>
-
+    <script src="script.js"></script>   
 </body>
 
 </html>

@@ -31,46 +31,20 @@ renderer.outputEncoding = THREE.sRGBEncoding; // Set output encoding to sRGB
 renderer.toneMapping = THREE.ACESFilmicToneMapping; // Enable ACES tone mapping
 renderer.toneMappingExposure = 3; // Adjust exposure as needed
 
+
 // Initialize EffectComposer and passes
 const composer = new THREE.EffectComposer(renderer);
 const renderPass = new THREE.RenderPass(scene, camera);
 composer.addPass(renderPass);
 
-
 document.body.appendChild(renderer.domElement);
 
 renderer.setClearColor(0x111111); // Sets a dark grey background
 
+
 const textureLoader = new THREE.TextureLoader();
 const texture = textureLoader.load('assets/Textures');
 texture.encoding = THREE.sRGBEncoding;
-
-//----------------------------Helpers-----------------------------//
-
-// const axesHelper = new THREE.AxesHelper(5); // Size of the axes
-// scene.add(axesHelper);
-
-// const gridHelper = new THREE.GridHelper(125, 15); // Grid size and divisions
-// scene.add(gridHelper);
-
-// // const cameraHelper = new THREE.CameraHelper(camera);
-// // scene.add(cameraHelper);
-
-// const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-// directionalLight.position.set(10, 10, 10);
-// scene.add(directionalLight);
-
-// const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5); // Size of helper
-// scene.add(directionalLightHelper);
-
-// const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-// pointLight.position.set(5, 5, 5);
-// scene.add(pointLight);
-
-// const pointLightHelper = new THREE.PointLightHelper(pointLight, 1); // Size of helper
-// scene.add(pointLightHelper);
-
-//----------------------------Helpers-----------------------------//
 
 // Set up OutlinePass
 const outlinePass = new THREE.OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), scene, camera);
@@ -81,45 +55,6 @@ outlinePass.pulsePeriod = 0; // No pulsing
 outlinePass.visibleEdgeColor.set('#FF0000'); 
 outlinePass.hiddenEdgeColor.set('#FF0000'); 
 composer.addPass(outlinePass);
-
-//Vignette
-const vignetteShader = {
-    uniforms: {
-        tDiffuse: { value: null },
-        offset: { value: 1.0 }, // Controls how far the darkening extends
-        darkness: { value: 1.2 } // Controls the intensity of the darkening
-    },
-    vertexShader: `
-    varying vec2 vUv;
-    void main() {
-        vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-        `,
-        fragmentShader: `
-        uniform sampler2D tDiffuse;
-        uniform float offset;
-        uniform float darkness;
-        varying vec2 vUv;
-        
-        void main() {
-            vec4 color = texture2D(tDiffuse, vUv);
-            float dist = distance(vUv, vec2(0.5, 0.5));
-            color.rgb *= smoothstep(0.8, offset * 0.799, dist * (darkness + offset));
-            gl_FragColor = color;
-            }
-            `
-        };
-        
-        // Create a ShaderPass for the vignette effect
-        const vignettePass = new THREE.ShaderPass(vignetteShader);
-        
-        // Adjust the vignette effect intensity and size
-        vignettePass.uniforms.offset.value = .3; // Controls vignette size
-        vignettePass.uniforms.darkness.value = .3; // Controls vignette intensity
-        
-// Add the vignette pass to the composer
-composer.addPass(vignettePass);
 
 const colorCorrectionShader = {
     uniforms: {
@@ -154,7 +89,7 @@ const colorCorrectionPass = new THREE.ShaderPass(colorCorrectionShader);
 // Add the ShaderPass to the composer
 composer.addPass(colorCorrectionPass);
 
-// Get slider elements
+// // Get slider elements
 const brightnessSlider = document.getElementById('brightness-slider');
 const contrastSlider = document.getElementById('contrast-slider');
 
@@ -476,10 +411,12 @@ toggleOriginsButton.addEventListener('click', () => {
     toggleOriginsButton.textContent = originsVisible ? "Hide Origins" : "Show Origins";
 });
 
+let boundingBox;
+
 // Load the GLTF model
 const loader = new THREE.GLTFLoader();
 loader.load(
-    'https://pub-0fa84320243249fca31ce0de4238c3e8.r2.dev/scene.glb',
+    'assets/scene.glb',
     (gltf) => {
         const model = gltf.scene;
         model.position.set(-.35, -1, -3);
@@ -488,6 +425,11 @@ loader.load(
         console.log("Model loaded successfully"); // Debugging line
         // Add origin dots to each object in the model
         addOriginDots(model);
+
+        // Compute the bounding box
+        const box = new THREE.Box3().setFromObject(model);
+        boundingBox = box;
+        console.log("Bounding Box:", boundingBox); // Debugging
     },
     undefined,
     (error) => {
@@ -522,6 +464,14 @@ const initialCameraPosition = camera.position.clone(); // Clone the initial posi
 const initialCameraFOV = camera.fov; // Store initial FOV
 const initialTarget = controls.target.clone(); // Clone the initial target
 
+function clampCameraPosition(camera, boundingBox) {
+    const min = boundingBox.min;
+    const max = boundingBox.max;
+
+    camera.position.x = THREE.MathUtils.clamp(camera.position.x, min.x, max.x);
+    camera.position.y = THREE.MathUtils.clamp(camera.position.y, min.y, max.y);
+    camera.position.z = THREE.MathUtils.clamp(camera.position.z, min.z, max.z);
+}
 
 // // Animation loop
 function animate() {
@@ -574,8 +524,23 @@ function animate() {
         controls.update();
     }
 
+    if (boundingBox) {
+        clampCameraPosition(camera, boundingBox);
+    }
+    
     controls.update();
     composer.render();
 }
 
 animate();
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    // Adjust the camera aspect ratio and projection matrix
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    // Resize the renderer and composer
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
+});
