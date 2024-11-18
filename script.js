@@ -20,7 +20,7 @@ light.position.set(10, 10, 10);
 scene.add(light);
 
 // Create a camera
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 1000);
+const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.01, 1000);
 camera.position.set(0, 0, 1); // Set initial position to a visible location
 const originalFOV = camera.fov;
 
@@ -245,10 +245,10 @@ let isIdle = false;
 
 function applyIdleCameraMovement() {
     if (isIdle && !selectionEnabled) { // Only apply idle animation if selection is disabled
-        camera.fov = 30;
+        camera.fov = 20;
         camera.updateProjectionMatrix();
-        camera.position.x = Math.sin(Date.now() * 0.0002) * 0.1;
-        camera.position.y = Math.sin(Date.now() * 0.0002) * 0.1;
+        camera.position.x = Math.sin(Date.now() * 0.0001) * 0.1;
+        camera.position.y = Math.sin(Date.now() * 0.0001) * 0.1;
         camera.lookAt(0, 0, 0); // Keep the camera focused
     }
 }
@@ -256,7 +256,7 @@ function applyIdleCameraMovement() {
 let idleTimeout;
 let countdownInterval;
 let countdownValue = 2; // Countdown start value (in seconds)
-const idleTimeLimit = 35000; // Idle time limit in milliseconds (15 seconds)
+const idleTimeLimit = 8000; // Idle time limit in milliseconds (15 seconds)
 
 // Function to reset idle timer on user interaction
 function resetIdleTimer() {
@@ -411,31 +411,46 @@ toggleOriginsButton.addEventListener('click', () => {
     toggleOriginsButton.textContent = originsVisible ? "Hide Origins" : "Show Origins";
 });
 
-let boundingBox;
+let model; // Global variable for the model
+let adjustedBoundingBox; // Global variable for the shrunken bounding box
 
-// Load the GLTF model
 const loader = new THREE.GLTFLoader();
+const margin = 0.3; // Adjust this as needed
+
 loader.load(
     'assets/scene.glb',
     (gltf) => {
-        const model = gltf.scene;
-        model.position.set(-.35, -1, -3);
-        model.scale.set(1, 1, 1);
+        model = gltf.scene; // Store the model globally
+        model.position.set(-0.3, -1, -3); // Adjust the model's position as needed
         scene.add(model);
-        console.log("Model loaded successfully"); // Debugging line
-        // Add origin dots to each object in the model
-        addOriginDots(model);
 
-        // Compute the bounding box
-        const box = new THREE.Box3().setFromObject(model);
-        boundingBox = box;
-        console.log("Bounding Box:", boundingBox); // Debugging
+        console.log("Model loaded successfully");
+
+        // Calculate the bounding box and shrink it
+        const originalBoundingBox = calculateBoundingBox(model);
+        adjustedBoundingBox = shrinkBoundingBox(originalBoundingBox, margin);
+        console.log("Adjusted Bounding Box:", adjustedBoundingBox);
     },
     undefined,
     (error) => {
-        console.error('An error occurred while loading the model:', error);
+        console.error('Error loading the model:', error);
     }
 );
+
+function calculateBoundingBox(object) {
+    const box = new THREE.Box3().setFromObject(object);
+    console.log("Original Bounding Box:", box);
+    return box;
+}
+
+function shrinkBoundingBox(box, margin) {
+    const newBox = box.clone(); // Clone the original box
+    newBox.min.addScalar(margin); // Expand the min bounds by the margin
+    newBox.max.subScalar(margin); // Reduce the max bounds by the margin
+    console.log("Shrunken Bounding Box:", newBox);
+    return newBox;
+}
+
 
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true; // Enable damping for smooth controls
@@ -458,19 +473,17 @@ controls.addEventListener('end', () => {
     cameraIsMoving = false;
 });
 
-
 // 3. Define initial camera settings
 const initialCameraPosition = camera.position.clone(); // Clone the initial position
 const initialCameraFOV = camera.fov; // Store initial FOV
 const initialTarget = controls.target.clone(); // Clone the initial target
 
-function clampCameraPosition(camera, boundingBox) {
-    const min = boundingBox.min;
-    const max = boundingBox.max;
 
-    camera.position.x = THREE.MathUtils.clamp(camera.position.x, min.x, max.x);
-    camera.position.y = THREE.MathUtils.clamp(camera.position.y, min.y, max.y);
-    camera.position.z = THREE.MathUtils.clamp(camera.position.z, min.z, max.z);
+function constrainCameraToBoundingBox(camera, boundingBox) {
+    // Ensure the camera stays within the bounding box
+    camera.position.x = THREE.MathUtils.clamp(camera.position.x, boundingBox.min.x, boundingBox.max.x);
+    camera.position.y = THREE.MathUtils.clamp(camera.position.y, boundingBox.min.y, boundingBox.max.y);
+    camera.position.z = THREE.MathUtils.clamp(camera.position.z, boundingBox.min.z, boundingBox.max.z);
 }
 
 // // Animation loop
@@ -523,11 +536,11 @@ function animate() {
     if (controls && !isIdle) {
         controls.update();
     }
-
-    if (boundingBox) {
-        clampCameraPosition(camera, boundingBox);
+    // Clamp the camera position
+    if (adjustedBoundingBox) {
+        // Constrain the camera only if the bounding box is defined
+        constrainCameraToBoundingBox(camera, adjustedBoundingBox);
     }
-    
     controls.update();
     composer.render();
 }
